@@ -1,22 +1,3 @@
-"""
-This python script automates downloading files from HypeMachine.com
-Copyright (C) 2011  Farid Marwan Zakaria
-
-This library is free software; you can redistribute it and/or
-modify it under the terms of the GNU Lesser General Public
-License as published by the Free Software Foundation; either
-version 2.1 of the License, or (at your option) any later version.
-
-This library is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-Lesser General Public License for more details.
-
-You should have received a copy of the GNU Lesser General Public
-License along with this library; if not, write to the Free Software
-Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
-"""
-
 import unicodedata
 from time import time
 import urllib2
@@ -25,13 +6,19 @@ from bs4 import BeautifulSoup
 import json
 import string
 import os
+import sys
 
 # AREA_TO_SCRAPE
 # This is the general area that you'd like to parse and scrape.
 # Ex. 'popular', 'latest', '<username>' or 'track/<id>'
 
-AREA_TO_SCRAPE = 'popular'
-NUMBER_OF_PAGES = 3
+# for arg in sys.argv:
+#     print arg
+user = sys.argv[1]
+print(user)
+pages = sys.argv[2]
+AREA_TO_SCRAPE = user
+NUMBER_OF_PAGES = 2
 
 # DO NOT MODIFY THESE UNLES YOU KNOW WHAT YOU ARE DOING
 DEBUG = False
@@ -138,10 +125,10 @@ class HypeScraper:
 
                 download_response = urllib2.urlopen(url)
                 filename = '{} - {}.mp3'.format(artist, title)
-                if os.path.exists(filename):
+                if os.path.exists('/Users/rodneycox/Music/'+user+'/'+filename):
                     print('File already exists , skipping')
                 else:
-                    mp3_song_file = open(filename, 'wb')
+                    mp3_song_file = open('/Users/rodneycox/Music/'+user+'/'+filename, 'wb')
                     mp3_song_file.write(download_response.read())
                     mp3_song_file.close()
             except urllib2.HTTPError, e:
@@ -154,9 +141,9 @@ class HypeScraper:
                 print 'generic exception: ' + str(e)
 
 
-def main():
+def main(argv):
     scraper = HypeScraper()
     scraper.start()
 
 if __name__ == '__main__':
-        main()
+        main(sys.argv[1:])
