@@ -7,6 +7,7 @@ import json
 import string
 import os
 import sys
+import argparse
 
 # AREA_TO_SCRAPE
 # This is the general area that you'd like to parse and scrape.
@@ -14,11 +15,30 @@ import sys
 
 # for arg in sys.argv:
 #     print arg
-user = sys.argv[1]
-print(user)
-pages = sys.argv[2]
+parser = argparse.ArgumentParser()
+parser.add_argument('-user', default=False)
+parser.add_argument('-pages', default=False)
+parser.add_argument('-directory', default=False)
+args = parser.parse_args()
+user = None
+
+if not args.user:
+    raise 'you must specify a user'
+else:
+    user = args.user
+if not args.directory:
+    raise 'you must specify where you want these songs stored'
+else:
+    directory = args.directory
+if not  args.pages:
+    raise 'you must specify the number of pages to scan'
+else:
+    pages = args.pages
+# user = sys.argv[1]
+# print(user)
+# pages = sys.argv[2]
 AREA_TO_SCRAPE = user
-NUMBER_OF_PAGES = 2
+NUMBER_OF_PAGES = int(pages)
 
 # DO NOT MODIFY THESE UNLES YOU KNOW WHAT YOU ARE DOING
 DEBUG = False
@@ -125,10 +145,10 @@ class HypeScraper:
 
                 download_response = urllib2.urlopen(url)
                 filename = '{} - {}.mp3'.format(artist, title)
-                if os.path.exists('/Users/rodneycox/Music/'+user+'/'+filename):
+                if os.path.exists(directory+user+'/'+filename):
                     print('File already exists , skipping')
                 else:
-                    mp3_song_file = open('/Users/rodneycox/Music/'+user+'/'+filename, 'wb')
+                    mp3_song_file = open(directory+user+'/'+filename, 'wb')
                     mp3_song_file.write(download_response.read())
                     mp3_song_file.close()
             except urllib2.HTTPError, e:
